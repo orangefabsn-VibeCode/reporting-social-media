@@ -13,8 +13,25 @@ ACCENT = "#FF7900"
 TEXT_MAIN = "#FFFFFF"
 TEXT_SEC = "#A0A0A0"
 GRADIENT_END = "#000000"
-# Définition des couleurs ici
-COLORS = { "LinkedIn": "#0077B5", "Instagram": "#E1306C", "Facebook": "#1877F2", "X": "#FFFFFF" }
+
+# COULEURS OFFICIELLES
+COLORS = { 
+    "LinkedIn": "#0077B5", 
+    "Instagram": "#E1306C", 
+    "Facebook": "#1877F2", 
+    "X": "#1DA1F2", 
+    "Twitter": "#1DA1F2" 
+}
+
+# ⚠️ CONFIGURATION DES TOTAUX D'ABONNÉS ACTUELS ⚠️
+# Modifiez ces chiffres avec vos vrais totaux à date
+CURRENT_FOLLOWERS = {
+    "LinkedIn": 7071,
+    "Instagram": 1505,
+    "Facebook": 2029,
+    "X": 2452,
+    "Twitter": 2452
+}
 
 # --- 2. CSS & DESIGN ---
 st.markdown(f"""
@@ -82,18 +99,20 @@ st.markdown(f"""
         border-color: {ACCENT};
         box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }}
-    .kpi-card::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: linear-gradient(90deg, transparent, {ACCENT}, transparent);
-        opacity: 0;
-        transition: opacity 0.3s;
+    
+    /* SUBSCRIBER MINI CARDS */
+    .sub-card {{
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        border-top: 3px solid #555; /* Default */
+        margin-bottom: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }}
-    .kpi-card:hover::before {{ opacity: 1; }}
+    .sub-net {{ font-size: 13px; color: {TEXT_SEC}; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px; }}
+    .sub-total {{ font-size: 26px; font-weight: 700; color: {TEXT_MAIN}; margin: 5px 0; }}
+    .sub-growth {{ font-size: 13px; background: rgba(52, 211, 153, 0.1); color: #34D399; padding: 2px 8px; border-radius: 10px; display: inline-block; }}
 
     .kpi-title {{ font-size: 13px; color: {TEXT_SEC}; text-transform: uppercase; letter-spacing: 1px; }}
     .kpi-value {{ font-size: 36px; font-weight: 700; color: {TEXT_MAIN}; margin-top: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }}
@@ -128,12 +147,11 @@ st.markdown(f"""
         border-radius: 10px !important;
     }}
     
-    /* --- CSS BOUTON EXPORT CSV (CONTRASTE BLANC FORCÉ) --- */
+    /* --- CSS BOUTON EXPORT CSV --- */
     [data-testid="stDownloadButton"] button {{
         background-color: {ACCENT} !important;
         border: 1px solid white !important;
     }}
-    /* On cible le texte à l'intérieur du bouton */
     [data-testid="stDownloadButton"] button,
     [data-testid="stDownloadButton"] button * {{
         color: #FFFFFF !important;
@@ -145,8 +163,6 @@ st.markdown(f"""
     }}
     
     /* --- CSS CHATBOT FLOTTANT --- */
-    
-    /* La fenêtre principale */
     .chat-window {{
         position: fixed;
         bottom: 100px;
@@ -183,13 +199,12 @@ st.markdown(f"""
         flex: 1;
         overflow-y: auto;
         padding: 15px;
-        padding-bottom: 80px; /* Espace pour l'input */
+        padding-bottom: 80px; 
         display: flex;
         flex-direction: column;
         gap: 10px;
     }}
     
-    /* Messages */
     .chat-msg {{
         padding: 10px 14px;
         border-radius: 12px;
@@ -210,7 +225,6 @@ st.markdown(f"""
         border-bottom-right-radius: 2px;
     }}
     
-    /* Conteneur de l'input (Visual Background) */
     .chat-footer {{
         position: fixed;
         bottom: 100px;
@@ -226,46 +240,46 @@ st.markdown(f"""
         align-items: center;
     }}
     
-    .chat-footer .stTextInput {{
-        width: 100%;
-    }}
-    .chat-footer input {{
-        background: rgba(0,0,0,0.3) !important;
-        border: none !important;
-        color: white !important;
-    }}
+    .chat-footer .stTextInput {{ width: 100%; }}
+    .chat-footer input {{ background: rgba(0,0,0,0.3) !important; border: none !important; color: white !important; }}
     
-    /* BOUTON FERMETURE CHAT DANS LE HEADER */
     div.stButton.close-chat-btn {{
         position: fixed;
-        bottom: 585px; /* Calculé pour être en haut à droite de la fenêtre */
+        bottom: 585px; 
         right: 45px;
         z-index: 100005;
     }}
     div.stButton.close-chat-btn > button {{
-        background: transparent;
-        border: none;
-        color: white;
-        font-size: 18px;
-        padding: 0;
-        line-height: 1;
-        min-height: auto;
+        background: transparent; border: none; color: white; font-size: 18px; padding: 0; line-height: 1; min-height: auto;
     }}
-    div.stButton.close-chat-btn > button:hover {{
-        color: #ffcccc;
-        background: transparent;
+    div.stButton.close-chat-btn > button:hover {{ color: #ffcccc; background: transparent; }}
+    
+    /* Bouton flottant pour ouvrir le chat */
+    div.stButton.floating-chat-btn {{
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 99999;
+    }}
+    div.stButton.floating-chat-btn > button {{
+        background: linear-gradient(135deg, {ACCENT}, #ff9100);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        box-shadow: 0 4px 15px rgba(255, 121, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }}
 
 </style>
 """, unsafe_allow_html=True)
 
 # --- 3. DATA ---
-# 👇👇👇 TON LIEN ICI 👇👇👇
 sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpxQxY8LwNpziX-neBxgl3QNBIXFVLvP0xPRYYTXr9IYeC-u707qXfH2iOqP87p8wPtf_xIA3tqOx1/pub?output=csv"
-
-if "TON_LIEN" in sheet_url:
-    st.error("🛑 **STOP !** Lien manquant.")
-    st.stop()
 
 @st.cache_data(ttl=600)
 def load_data():
@@ -296,8 +310,8 @@ with st.container():
     with c2: end_date = st.date_input("FIN", date(2025, 11, 30))
     with c3:
         if 'Reseau' in df.columns:
-            all = df['Reseau'].unique()
-            choix = st.multiselect("RÉSEAUX", all, default=all)
+            all_nets = df['Reseau'].unique()
+            choix = st.multiselect("RÉSEAUX", all_nets, default=all_nets)
     st.markdown('</div>', unsafe_allow_html=True)
 
 mask_cur = (df['Date'].dt.date >= start_date) & (df['Date'].dt.date <= end_date) & (df['Reseau'].isin(choix))
@@ -310,6 +324,7 @@ mask_prv = (df['Date'].dt.date >= prev_s) & (df['Date'].dt.date <= prev_e) & (df
 df_prev = df.loc[mask_prv]
 
 if not df_filt.empty:
+    # --- GLOBAL KPIs ---
     def get_kpi(col):
         v = df_filt[col].sum()
         p = df_prev[col].sum()
@@ -338,6 +353,33 @@ if not df_filt.empty:
     with cols[3]: st.markdown(kpi_html("👥", "Nouveaux Abonnés", f"{abo:,}".replace(",", " "), d_abo), unsafe_allow_html=True)
     with cols[4]: st.markdown(kpi_html("📈", "Taux d'Engag.", f"{taux:.2f}%", d_taux, is_pct=True), unsafe_allow_html=True)
 
+    # --- NOUVEAU: ABONNÉS PAR PLATEFORME AVEC TOTAL ---
+    st.markdown("###")
+    st.markdown("##### 👥 Détail Abonnés par Plateforme (Total Actuel + Croissance)")
+    
+    sub_by_net = df_filt.groupby('Reseau')['Nouveaux Abonnes'].sum()
+    
+    valid_nets = [n for n in choix if n in sub_by_net.index]
+    if valid_nets:
+        c_subs = st.columns(len(valid_nets))
+        for i, net in enumerate(valid_nets):
+            new_subs = int(sub_by_net[net])
+            # Récupération du total configuré ou 0 si absent
+            total_current = CURRENT_FOLLOWERS.get(net, 0)
+            
+            color = COLORS.get(net, "#555")
+            
+            html_sub = f"""
+            <div class="sub-card" style="border-top-color: {color};">
+                <div class="sub-net">{net}</div>
+                <div class="sub-total">{total_current:,}</div>
+                <div class="sub-growth">+{new_subs} sur la période</div>
+            </div>
+            """.replace(",", " ")
+            with c_subs[i]:
+                st.markdown(html_sub, unsafe_allow_html=True)
+
+    # --- GRAPHS ---
     st.markdown("###")
     df_top3 = df_filt.nlargest(3, 'Engagements')[['Date', 'Reseau', 'Engagements']]
     
@@ -349,7 +391,7 @@ if not df_filt.empty:
 
     c_g1, c_g2 = st.columns([2, 1])
     with c_g1:
-        st.markdown("##### 📈 Croissance de la Communauté")
+        st.markdown("##### 📈 Croissance de la Communauté (Cumul)")
         df_cum = df_filt.copy()
         df_cum['Cumul'] = df_cum.groupby('Reseau')['Nouveaux Abonnes'].cumsum()
         fig = px.area(df_cum, x='Date', y='Cumul', color='Reseau', color_discrete_map=COLORS)
@@ -367,12 +409,12 @@ if not df_filt.empty:
     st.markdown("###")
     c_g3, c_g4 = st.columns([1, 1])
     with c_g3:
-        st.markdown("##### 🍩 Répartition")
+        st.markdown("##### 🍩 Répartition des Impressions")
         fig = px.pie(df_filt, values='Impressions', names='Reseau', color='Reseau', color_discrete_map=COLORS, hole=0.7)
         fig.update_traces(textinfo='percent', textfont_size=14, marker=dict(line=dict(color='#000000', width=2)))
         st.plotly_chart(make_chart_transparent(fig), use_container_width=True)
     with c_g4:
-        st.markdown("##### 📊 Impressions")
+        st.markdown("##### 📊 Impressions dans le temps")
         fig = px.line(df_filt, x='Date', y='Impressions', color='Reseau', color_discrete_map=COLORS)
         fig.update_traces(line_shape='spline', line_width=4)
         st.plotly_chart(make_chart_transparent(fig), use_container_width=True)
@@ -397,20 +439,15 @@ if not df_filt.empty:
 
 
     # --- 11. CHATBOT FLOTTANT INTÉGRÉ ---
+    if "chat_open" not in st.session_state: st.session_state.chat_open = False
+    if "chat_history" not in st.session_state: st.session_state.chat_history = [{"role": "bot", "msg": "👋 Hello ! Je suis l'Assistant OSS. Posez-moi une question sur les chiffres !"}]
 
-    # Etat du chat
-    if "chat_open" not in st.session_state:
-        st.session_state.chat_open = False
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = [{"role": "bot", "msg": "👋 Hello ! Je suis l'Assistant OSS. Posez-moi une question !"}]
+    def toggle_chat(): st.session_state.chat_open = not st.session_state.chat_open
 
-    def toggle_chat():
-        st.session_state.chat_open = not st.session_state.chat_open
-
-    # Intelligence Artificielle (Simplifiée)
     def agent_oss(question, df_source):
         q = question.lower()
         filter_net = None
+        # Détection réseau
         if "linkedin" in q: filter_net = "LinkedIn"
         elif "instagram" in q: filter_net = "Instagram"
         elif "facebook" in q: filter_net = "Facebook"
@@ -427,8 +464,14 @@ if not df_filt.empty:
             val = int(df_chat['Engagements'].sum())
             response = f"❤️ Total **Engagements** ({net_name}) : **{val:,}**.".replace(",", " ")
         elif "abonne" in q or "suivi" in q or "follower" in q:
-            val = int(df_chat['Nouveaux Abonnes'].sum())
-            response = f"👥 Nouveaux **Abonnés** ({net_name}) : **{val:,}**.".replace(",", " ")
+            # Gestion de la demande "Total" vs "Nouveaux"
+            if "total" in q and filter_net:
+                # Si on demande le total d'un réseau spécifique
+                total = CURRENT_FOLLOWERS.get(filter_net, 0)
+                response = f"👥 Total Abonnés actuel sur **{filter_net}** : **{total:,}** (estimé).".replace(",", " ")
+            else:
+                val = int(df_chat['Nouveaux Abonnes'].sum())
+                response = f"📈 Croissance **Abonnés** ({net_name}) : **+{val:,}** (sur cette période).".replace(",", " ")
         elif "meilleur" in q or "top" in q or "record" in q:
             if not df_chat.empty:
                 best = df_chat.loc[df_chat['Engagements'].idxmax()]
@@ -440,10 +483,7 @@ if not df_filt.empty:
             response = f"📢 **Portée** (Reach) : **{val:,}**.".replace(",", " ")
         return response
 
-    # --- AFFICHAGE DE LA FENÊTRE DE CHAT (Si ouverte) ---
     if st.session_state.chat_open:
-        # BOUTON FERMETURE EXPLICITE (Top Right)
-        # On utilise une colonne fictive pour le placer via CSS
         c_close = st.container()
         with c_close:
             st.markdown('<div class="stButton close-chat-btn">', unsafe_allow_html=True)
@@ -451,83 +491,62 @@ if not df_filt.empty:
                 st.session_state.chat_open = False
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
-
-        # 1. Structure HTML de la fenêtre (Header + Messages)
-        chat_html = ""
-        for chat in st.session_state.chat_history:
-            cls = "bot-msg" if chat["role"] == "bot" else "user-msg"
-            chat_html += f'<div class="chat-msg {cls}">{chat["msg"]}</div>'
-        
-        st.markdown(f"""
-        <div class="chat-window">
-            <div class="chat-header">
-                <span>🤖 Assistant OSS</span>
-            </div>
-            <div class="chat-body">
-                {chat_html}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # 2. Zone d'Input (Widget Streamlit)
+            
         with st.container():
-            st.markdown('<div class="chat-footer">', unsafe_allow_html=True)
+            # Fenêtre du chat
+            st.markdown('<div class="chat-window">', unsafe_allow_html=True)
+            
+            # Header
+            st.markdown('<div class="chat-header">🤖 Assistant OSS</div>', unsafe_allow_html=True)
+            
+            # Body (Messages)
+            st.markdown('<div class="chat-body">', unsafe_allow_html=True)
+            for msg in st.session_state.chat_history:
+                cls = "user-msg" if msg["role"] == "user" else "bot-msg"
+                st.markdown(f'<div class="chat-msg {cls}">{msg["msg"]}</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True) # End body
+            
+            st.markdown('</div>', unsafe_allow_html=True) # End window
+
+            # Input area (Form)
             with st.form(key="chat_form", clear_on_submit=True):
                 col_in, col_sub = st.columns([5, 1])
                 with col_in:
                     user_input = st.text_input("", placeholder="Posez une question...", label_visibility="collapsed")
                 with col_sub:
                     submit = st.form_submit_button("➤")
-            st.markdown('</div>', unsafe_allow_html=True)
-
-            if submit and user_input:
-                st.session_state.chat_history.append({"role": "user", "msg": user_input})
-                bot_resp = agent_oss(user_input, df_filt)
-                st.session_state.chat_history.append({"role": "bot", "msg": bot_resp})
-                st.rerun()
-
-    # --- BOUTON FLOTTANT (FAB) ---
-    c_fab = st.container()
-    with c_fab:
-        st.markdown("""
-        <style>
-            div.stButton.fab-btn > button {
+                
+                if submit and user_input:
+                    st.session_state.chat_history.append({"role": "user", "msg": user_input})
+                    bot_reply = agent_oss(user_input, df_filt)
+                    st.session_state.chat_history.append({"role": "bot", "msg": bot_reply})
+                    st.rerun()
+                    
+            # Hack pour styliser le footer input
+            st.markdown("""
+            <script>
+            // Pas de JS pur possible ici, mais le CSS gère le positionnement du form
+            </script>
+            <style>
+            [data-testid="stForm"] {
                 position: fixed;
-                bottom: 30px;
+                bottom: 100px;
                 right: 30px;
-                width: 60px;
-                height: 60px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #FF7900, #FF4500);
-                color: white;
-                font-size: 24px;
-                border: none;
-                box-shadow: 0 4px 20px rgba(255, 121, 0, 0.4);
-                z-index: 999999;
-                transition: transform 0.2s;
+                width: 360px;
+                z-index: 100002;
+                background: #1e293b;
+                padding: 10px;
+                border-radius: 0 0 16px 16px;
+                border: 1px solid rgba(255,255,255,0.1);
+                border-top: none;
             }
-            div.stButton.fab-btn > button:hover {
-                transform: scale(1.1);
-            }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        # Le bouton FAB affiche 💬 quand fermé, et rien quand ouvert (car la fenêtre a sa propre croix)
-        # Ou on peut laisser le FAB pour rouvrir si on ferme
-        if not st.session_state.chat_open:
-            st.markdown('<div class="stButton fab-btn">', unsafe_allow_html=True)
-            if st.button("💬", key="open_chat_fab"):
-                toggle_chat()
-                st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-        else:
-            # Quand ouvert, on peut aussi afficher le FAB en mode "Fermer" si on veut
-            # Mais ici on a mis la croix en haut
-            st.markdown('<div class="stButton fab-btn">', unsafe_allow_html=True)
-            if st.button("❌", key="close_chat_fab"):
-                toggle_chat()
-                st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
+            </style>
+            """, unsafe_allow_html=True)
 
-else:
-    st.info("Sélectionnez une période.")
+    else:
+        # Bouton flottant pour ouvrir
+        st.markdown('<div class="stButton floating-chat-btn">', unsafe_allow_html=True)
+        if st.button("💬", key="open_chat"):
+            toggle_chat()
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
